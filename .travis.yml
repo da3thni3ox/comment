@@ -1,0 +1,19 @@
+language: python
+services:
+  - docker
+
+env:
+  - DOCKER_REPO_SLUG=d3r7nit3ox/comment
+
+jobs:
+  include:
+    - stage: Build
+      name: Build image
+      script:
+        - docker build -t $DOCKER_REPO_SLUG:latest .
+
+after_success:
+  - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
+  - if [[ $TRAVIS_BRANCH = master ]]; then docker push $DOCKER_REPO_SLUG:latest; else true; fi
+
+
